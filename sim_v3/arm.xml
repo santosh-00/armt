@@ -1,0 +1,126 @@
+<mujoco model="wearable_arm_v3">
+  <compiler angle="degree" autolimits="true"/>
+  <option timestep="0.002" integrator="implicitfast"/>
+  <visual>
+    <headlight ambient="0.35 0.35 0.35" diffuse="0.55 0.55 0.55" specular="0.1 0.1 0.1"/>
+    <global offwidth="1280" offheight="720" azimuth="-125" elevation="-12"/>
+  </visual>
+
+  <default>
+    <joint damping="0.3" armature="0.01"/>
+    <geom contype="1" conaffinity="1" friction="0.8 0.01 0.001" density="0"/>
+    <default class="visual"><geom type="mesh" contype="0" conaffinity="0" group="2" density="0"/></default>
+    <default class="col"><geom group="3" rgba="0.9 0.4 0.2 0.25"/></default>
+    <default class="pad"><geom group="3" friction="1.2 0.02 0.002" rgba="0.1 0.1 0.1 1"/></default>
+    <default class="body_proxy"><geom contype="2" conaffinity="1" rgba="0.85 0.75 0.65 0.35" group="1"/></default>
+  </default>
+
+  <asset>
+    <material name="fork" rgba="0.80 0.84 0.82 1"/>
+    <material name="tongue" rgba="0.18 0.49 0.53 1"/>
+    <material name="body" rgba="0.29 0.33 0.32 1"/>
+    <texture name="sky" type="skybox" builtin="gradient" rgb1="0.95 0.96 0.95" rgb2="0.78 0.82 0.80" width="256" height="256"/>
+    <texture name="grid" type="2d" builtin="checker" width="256" height="256" rgb1="0.92 0.93 0.92" rgb2="0.86 0.88 0.87"/>
+    <material name="grid" texture="grid" texrepeat="8 8"/>
+    <mesh name="yaw_housing" file="meshes/yaw_housing.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="shoulder_yoke" file="meshes/shoulder_yoke.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="L1_outer" file="meshes/L1_outer.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="L1_inner" file="meshes/L1_inner.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="L2_link" file="meshes/L2_link.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="L3_outer" file="meshes/L3_outer.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="L3_inner" file="meshes/L3_inner.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="hand_body" file="meshes/hand_body.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="hand_jaw" file="meshes/hand_jaw.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0.4 -0.6 1.2" dir="-0.3 0.5 -1" diffuse="0.8 0.8 0.8"/>
+    <geom name="floor" type="plane" pos="0 0 -1.4" size="2 2 0.01" material="grid" contype="0" conaffinity="0"/>
+
+    <!-- Your body, as simple obstacles. Origin = top of the left shoulder; your body is toward -y. -->
+    <geom name="torso"    class="body_proxy" type="box" pos="0 -0.17 -0.30" size="0.11 0.20 0.30"/>
+    <geom name="head"     class="body_proxy" type="ellipsoid" pos="0 -0.17 0.20" size="0.085 0.075 0.11"/>
+    <geom name="neck"     class="body_proxy" type="capsule" fromto="0 -0.17 0.0 0 -0.17 0.10" size="0.055"/>
+    <geom name="backpack" class="body_proxy" type="box" pos="-0.18 -0.17 -0.27" size="0.07 0.18 0.24"/>
+    <site name="chest_plane" pos="0.11 0 -0.15" size="0.004" rgba="0.7 0.3 0.1 1"/>
+
+    <body name="housing" pos="0 0 0.1110" quat="0.5 -0.5 -0.5 -0.5">
+      <inertial pos="-0.08468 0.00000 0.00000" mass="0.0406" fullinertia="2.358983e-05 1.340645e-05 1.632090e-05 -2.123842e-17 1.186147e-22 -8.847281e-23"/>
+        <geom class="visual" mesh="yaw_housing" material="body"/>
+      <geom class="col" type="cylinder" fromto="-0.0950 0.0000 0.0000 -0.0630 0.0000 0.0000" size="0.020"/>
+      <geom class="col" type="box" pos="-0.0910 0.0000 0.0000" size="0.0040 0.0350 0.0300"/>
+
+      <body name="yoke">
+        <inertial pos="-0.06745 -0.00000 -0.00014" mass="0.1124" fullinertia="7.729083e-06 5.519642e-05 5.748479e-05 5.896991e-21 2.549787e-07 -6.580014e-22"/>
+        <joint name="yaw" axis="1 0 0" range="-100 100"/>
+        <geom class="visual" mesh="shoulder_yoke" material="body"/>
+        <geom class="col" type="cylinder" fromto="-0.0620 0.0000 0.0000 -0.0560 0.0000 0.0000" size="0.025"/>
+        <geom class="col" type="box" pos="-0.0480 0.0000 0.0000" size="0.0080 0.0200 0.0160"/>
+
+      <body name="L1">
+        <inertial pos="0.08000 0.00000 0.00000" mass="0.4008" fullinertia="1.264588e-05 2.348726e-03 2.355366e-03 4.916038e-21 9.225681e-21 -1.203484e-22"/>
+        <joint name="shoulder" axis="0 0 1" range="-125 125"/>
+        <geom class="visual" mesh="L1_outer" material="fork"/>
+        <geom class="visual" mesh="L1_inner" material="fork"/>
+        <geom class="col" type="box" pos="0.0800 0.0000 0.0000" size="0.1000 0.0200 0.0095"/>
+
+        <body name="L2" pos="0.1600 0.0000 0.0000">
+          <inertial pos="0.06500 0.00000 -0.00000" mass="0.0254" fullinertia="4.006327e-06 6.494038e-05 6.879438e-05 2.250911e-21 -2.374238e-22 2.064062e-24"/>
+          <joint name="elbow" axis="0 0 1" range="-125 125"/>
+        <geom class="visual" mesh="L2_link" material="tongue"/>
+          <geom class="col" type="box" pos="0.0650 0.0000 0.0000" size="0.0850 0.0200 0.0030"/>
+
+          <body name="L3" pos="0.1300 0.0000 0.0000">
+            <inertial pos="0.02500 0.00000 0.00000" mass="0.3627" fullinertia="5.153247e-06 2.260907e-04 2.286525e-04 7.818217e-22 -3.288533e-22 -7.077996e-23"/>
+            <joint name="wrist" axis="0 0 1" range="-90 90"/>
+        <geom class="visual" mesh="L3_outer" material="fork"/>
+        <geom class="visual" mesh="L3_inner" material="fork"/>
+            <geom class="col" type="box" pos="0.0250 0.0000 0.0000" size="0.0450 0.0200 0.0095"/>
+
+            <body name="hand" pos="0.0500 0.0000 0.0000">
+              <inertial pos="0.04481 -0.00541 0.00000" mass="0.0909" fullinertia="5.762545e-06 2.869315e-05 2.982839e-05 4.759061e-06 6.533781e-22 2.944677e-23"/>
+              <joint name="hand" axis="0 0 1" range="-95 95"/>
+        <geom class="visual" mesh="hand_body" material="body"/>
+              <geom class="col" type="box" pos="0.0050 0.0000 0.0000"     size="0.0250 0.0200 0.0030"/>
+              <geom class="col" type="box" pos="0.0340 -0.0070 0.0000"   size="0.0040 0.0130 0.0160"/>
+              <geom class="col" type="box" pos="0.0460 -0.0070 0.0130"  size="0.0160 0.0130 0.0030"/>
+              <geom class="col" type="box" pos="0.0460 -0.0070 -0.0130" size="0.0160 0.0130 0.0030"/>
+              <geom class="col" type="box" pos="0.0690 -0.0160 0.0000"  size="0.0310 0.0040 0.0160"/>
+              <geom name="pad_lower" class="pad" type="box" pos="0.0750 -0.0120 0.0000" size="0.0200 0.0010 0.0100"/>
+              <site name="grip" pos="0.0750 -0.0105 0.0000" size="0.005" rgba="0.9 0.2 0.2 1"/>
+
+              <body name="jaw" pos="0.0460 -0.0040 0.0000">
+                <inertial pos="0.02294 -0.00052 -0.00000" mass="0.0072" fullinertia="2.612142e-07 2.486782e-06 2.309031e-06 2.345715e-08 -2.332016e-25 -1.472055e-24"/>
+                <joint name="jaw" axis="0 0 1" range="0 75"/>
+        <geom class="visual" mesh="hand_jaw" material="tongue"/>
+                <geom class="col" type="box" pos="0.0270 -0.0010 0.0000" size="0.0270 0.0040 0.0095"/>
+                <geom name="pad_upper" class="pad" type="box" pos="0.0290 -0.0050 0.0000" size="0.0200 0.0010 0.0085"/>
+              </body>
+            </body>
+          </body>
+        </body>
+        </body>
+      </body>
+    </body>
+
+    <!-- Reach target for training; the environment moves it every episode. -->
+    <body name="target" mocap="true" pos="0.25 0.05 0.05">
+      <geom type="sphere" size="0.012" rgba="0.9 0.3 0.1 0.6" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="yaw"      joint="yaw"      kp="25"  kv="0.8" forcerange="-3.0 3.0"             ctrlrange="-1.7453 1.7453"/>
+    <position name="shoulder" joint="shoulder" kp="60"  kv="2"   forcerange="-12.0 12.0" ctrlrange="-2.1817 2.1817"/>
+    <position name="elbow"    joint="elbow"    kp="40"  kv="1.2" forcerange="-7.0 7.0"       ctrlrange="-2.1817 2.1817"/>
+    <position name="wrist"    joint="wrist"    kp="15"  kv="0.4" forcerange="-3.0 3.0"       ctrlrange="-1.5708 1.5708"/>
+    <position name="hand"     joint="hand"     kp="10"  kv="0.3" forcerange="-2.0 2.0"         ctrlrange="-1.6581 1.6581"/>
+    <position name="jaw"      joint="jaw"      kp="5"   kv="0.1" forcerange="-1.0 1.0"           ctrlrange="0.0000 1.3090"/>
+  </actuator>
+
+  <sensor>
+    <jointpos joint="yaw"/><jointpos joint="shoulder"/><jointpos joint="elbow"/><jointpos joint="wrist"/><jointpos joint="hand"/><jointpos joint="jaw"/>
+    <actuatorfrc actuator="yaw"/><actuatorfrc actuator="shoulder"/><actuatorfrc actuator="elbow"/><actuatorfrc actuator="wrist"/><actuatorfrc actuator="hand"/>
+    <framepos objtype="site" objname="grip"/>
+  </sensor>
+</mujoco>

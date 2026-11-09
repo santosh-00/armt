@@ -1,0 +1,11 @@
+  100,000 steps     104 s   success   5.0%   median final distance   9.2 cm
+  200,000 steps     197 s   success  50.0%   median final distance   4.8 cm
+  300,000 steps     287 s   success  55.0%   median final distance   1.8 cm
+  400,000 steps     378 s   success  70.0%   median final distance   0.7 cm
+  500,000 steps     469 s   success 100.0%   median final distance   0.8 cm
+  600,000 steps     566 s   success  95.0%   median final distance   0.7 cm
+  700,000 steps     660 s   success 100.0%   median final distance   0.7 cm
+  800,000 steps     749 s   success  95.0%   median final distance   0.5 cm
+  900,000 steps     837 s   success 100.0%   median final distance   0.5 cm
+1,000,000 steps     925 s   success 100.0%   median final distance   0.5 cm
+saved to runs/ppo_reach3d
